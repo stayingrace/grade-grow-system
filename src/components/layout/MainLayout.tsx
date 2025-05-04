@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { SidebarProvider, Sidebar, SidebarContent, SidebarTrigger, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { useToast } from "@/components/ui/use-toast";
 import { Bell, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -29,16 +30,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({
 }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'New announcement posted', read: false },
     { id: 2, title: 'Assignment deadline updated', read: false }
   ]);
 
   const handleLogout = () => {
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account."
-    });
+    logout(); // Use the AuthContext's logout method
     navigate('/login');
   };
 
@@ -71,10 +70,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                   {navigationItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
-                        <a href={item.url} className="flex items-center gap-3">
+                        <Link to={item.url} className="flex items-center gap-3">
                           <item.icon className="h-5 w-5" />
                           <span>{item.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
